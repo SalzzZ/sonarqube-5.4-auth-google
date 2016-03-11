@@ -20,14 +20,25 @@
       <name>Julien Lancelot</name>
       <organization>SonarSource</organization>
     </developer>
+    <developer>
+      <id>SalzzZ</id>
+      <name>Salvian Reynaldi</name>
+      <organization>PT Traveloka Indonesia</organization>
+    </developer>
   </developers>
 
   <organization>
-    <name>SonarSource</name>
-    <url>http://sonarsource.com</url>
+    <name>PT Traveloka Indonesia</name>
+    <url>https://www.traveloka.com/</url>
   </organization>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-plus</artifactId>
+      <version>v1-rev353-1.21.0</version>
+    </dependency>
+
     <dependency>
       <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-plugin-api</artifactId>

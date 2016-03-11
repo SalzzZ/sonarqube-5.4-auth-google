@@ -53,14 +53,14 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
     }
 
     public String getName() {
-        return "Google";
+        return "Google OAuth2";
     }
 
     public Display getDisplay() {
         return Display.builder()
-                // URL of src/main/resources/static/google.png at runtime
-                .setIconPath("/static/authgoogle/google.png")
-                .setBackgroundColor("#444444")
+                // URL of src/main/resources/static/google.svg at runtime
+                .setIconPath("/static/authgoogle/google.svg")
+                .setBackgroundColor("#000000")
                 .build();
     }
 
@@ -94,7 +94,7 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
         try {
             tokenResponse = new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), jsonFactory, settings.clientId(), settings.clientSecret(), code, settings.redirectUri()).execute();
         } catch (IOException e) {
-            LOGGER.info("Authorization Code Fail",e);
+            LOGGER.info("Authorization Code Fail", e);
             return;
         }
         GoogleIdToken googleIdToken;
@@ -102,15 +102,15 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
         try {
             googleIdToken = GoogleIdToken.parse(jsonFactory, idToken);
         } catch (IOException e) {
-            LOGGER.info("ID Token Fail",e);
+            LOGGER.info("ID Token Fail", e);
             return;
         }
         String email = googleIdToken.getPayload().getEmail();
         UserIdentity userIdentity = UserIdentity.builder()
-                .setProviderLogin(email.substring(email.indexOf('@') + 1))
-                .setLogin(email.substring(email.indexOf('@') + 1))
-                .setName((String) googleIdToken.getPayload().get("name"))
-                .setEmail(googleIdToken.getPayload().getEmail())
+                .setProviderLogin(email.substring(0,email.indexOf('@')))
+                .setLogin(email.substring(0,email.indexOf('@')))
+                .setName(email.substring(0,email.indexOf('@')))
+                .setEmail(email)
                 .build();
         context.authenticate(userIdentity);
         context.redirectToRequestedPage();
