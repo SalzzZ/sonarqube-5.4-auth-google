@@ -73,7 +73,7 @@ public class GoogleSettings {
                         .subCategory(SUBCATEGORY)
                         .index(3)
                         .build(),
-                PropertyDefinition.builder(HOSTED_DOMAIN)
+                PropertyDefinition.builder(REDIRECT_URI)
                         .name("Redirect URI")
                         .description("Oauth2 Redirection URI for this SonarQube Instance")
                         .category(CATEGORY)
