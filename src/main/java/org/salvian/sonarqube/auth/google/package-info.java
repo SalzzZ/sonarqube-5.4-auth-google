@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -18,7 +18,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 @ParametersAreNonnullByDefault
-package org.sonarsource.auth.github;
+package org.salvian.sonarqube.auth.google;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

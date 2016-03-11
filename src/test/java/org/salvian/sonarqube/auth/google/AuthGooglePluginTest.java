@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -17,32 +17,18 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonarsource.auth.github;
+package org.salvian.sonarqube.auth.google;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GsonUserTest {
+public class AuthGooglePluginTest {
+
+  AuthGooglePlugin underTest = new AuthGooglePlugin();
 
   @Test
-  public void test_getter_and_setter() throws Exception {
-    GsonUser underTest = new GsonUser()
-      .setLogin("john")
-      .setName("John")
-      .setEmail("john@email.com");
-
-    assertThat(underTest.getLogin()).isEqualTo("john");
-    assertThat(underTest.getName()).isEqualTo("John");
-    assertThat(underTest.getEmail()).isEqualTo("john@email.com");
-  }
-
-  @Test
-  public void parse_from_json() throws Exception {
-    GsonUser underTest = GsonUser.parse("{login:john, name:John, email:john@email.com}");
-
-    assertThat(underTest.getLogin()).isEqualTo("john");
-    assertThat(underTest.getName()).isEqualTo("John");
-    assertThat(underTest.getEmail()).isEqualTo("john@email.com");
+  public void test_extensions() throws Exception {
+    assertThat(underTest.getExtensions()).hasSize(8);
   }
 }

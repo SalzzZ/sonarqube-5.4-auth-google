@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -17,47 +17,20 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonarsource.auth.github;
+package org.salvian.sonarqube.auth.google;
 
-import com.google.gson.Gson;
+import org.sonar.api.SonarPlugin;
 
-/**
- * Lite representation of JSON response of GET https://api.github.com/user
- */
-public class GsonUser {
-  private String login;
-  private String name;
-  private String email;
+import java.util.ArrayList;
+import java.util.List;
 
-  public String getLogin() {
-    return login;
-  }
-
-  public GsonUser setLogin(String login) {
-    this.login = login;
-    return this;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public GsonUser setName(String name) {
-    this.name = name;
-    return this;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public GsonUser setEmail(String email) {
-    this.email = email;
-    return this;
-  }
-
-  public static GsonUser parse(String json) {
-    Gson gson = new Gson();
-    return gson.fromJson(json, GsonUser.class);
+public class AuthGooglePlugin extends SonarPlugin {
+  @Override
+  public List getExtensions() {
+    List extensions = new ArrayList();
+    extensions.add(GoogleIdentityProvider.class);
+    extensions.add(GoogleSettings.class);
+    extensions.addAll(GoogleSettings.definitions());
+    return extensions;
   }
 }
