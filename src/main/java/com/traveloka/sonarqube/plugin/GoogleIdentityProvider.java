@@ -31,8 +31,6 @@ import org.sonar.api.server.authentication.Display;
 import org.sonar.api.server.authentication.OAuth2IdentityProvider;
 import org.sonar.api.server.authentication.UnauthorizedException;
 import org.sonar.api.server.authentication.UserIdentity;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -41,22 +39,23 @@ import java.util.Arrays;
 @ServerSide
 public class GoogleIdentityProvider implements OAuth2IdentityProvider {
 
-    private static final Logger LOGGER = Loggers.get(GoogleIdentityProvider.class);
     private final GoogleSettings settings;
 
     public GoogleIdentityProvider(GoogleSettings settings) {
         this.settings = settings;
     }
 
-
+    @Override
     public String getKey() {
         return "google";
     }
 
+    @Override
     public String getName() {
         return "Google OAuth2";
     }
 
+    @Override
     public Display getDisplay() {
         return Display.builder()
                 // URL of src/main/resources/static/google.svg at runtime
@@ -65,17 +64,19 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
                 .build();
     }
 
+    @Override
     public boolean isEnabled() {
         return settings.isEnabled();
     }
 
+    @Override
     public boolean allowsUsersToSignUp() {
         return settings.allowUsersToSignUp();
     }
 
+    @Override
     public void init(InitContext context) {
         String state = context.generateCsrfState();
-        context.getRequest();
         if (!isEnabled()) {
             throw new IllegalStateException("Google Authentication is disabled");
         }
@@ -86,25 +87,29 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
         context.redirectTo(url);
     }
 
+    @Override
     public void callback(CallbackContext context) {
         context.verifyCsrfState();
         HttpServletRequest request = context.getRequest();
-        String code = request.getParameter("code");
+        String code = null;
+        try {
+            code = request.getParameter("code");
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("Authorization Code Fail", e);
+        }
         JsonFactory jsonFactory = new JacksonFactory();
         GoogleTokenResponse tokenResponse;
         try {
             tokenResponse = new GoogleAuthorizationCodeTokenRequest(new NetHttpTransport(), jsonFactory, settings.clientId(), settings.clientSecret(), code, settings.redirectUri()).execute();
         } catch (IOException e) {
-            LOGGER.info("Authorization Code Fail", e);
-            return;
+            throw new IllegalStateException("Authorization Token Fail", e);
         }
         GoogleIdToken googleIdToken;
         String idToken = tokenResponse.getIdToken();
         try {
             googleIdToken = GoogleIdToken.parse(jsonFactory, idToken);
         } catch (IOException e) {
-            LOGGER.info("ID Token Fail", e);
-            return;
+            throw new IllegalStateException("ID Token Fail", e);
         }
         if (!googleIdToken.getPayload().getHostedDomain().equals(settings.hostedDomain()) || !googleIdToken.getPayload().getEmailVerified())
             throw new UnauthorizedException("You must be a verified member of traveloka");

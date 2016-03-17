@@ -19,11 +19,15 @@
  */
 package com.traveloka.sonarqube.plugin;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.api.config.Settings;
 import org.sonar.api.server.authentication.OAuth2IdentityProvider;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -97,5 +101,4 @@ public class GoogleIdentityProviderTest {
     } else {
       settings.setProperty(GoogleSettings.ENABLED, false);
     }
-  }
 }

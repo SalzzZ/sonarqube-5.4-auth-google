@@ -41,8 +41,8 @@ public class GoogleSettings {
     public static final String REDIRECT_URI = "sonar.auth.google.redirectUri";
     public static final String ALLOW_USERS_TO_SIGN_UP = "sonar.auth.google.allowUsersToSignUp";
     public static final String HOSTED_DOMAIN = "sonar.auth.google.hostedDomain";
-    public static final String CATEGORY = "google";
-    public static final String SUBCATEGORY = "authentication";
+    public static final String CATEGORY = "Google Oauth2";
+    public static final String AUTHENTICATION_SUBCATEGORY = "Authentication";
 
     private final Settings settings;
 
@@ -56,7 +56,7 @@ public class GoogleSettings {
                         .name("Enabled")
                         .description("Enable Google users to login. Value is ignored if client ID, client secret, or Redirection URI is not defined.")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .type(BOOLEAN)
                         .defaultValue(valueOf(false))
                         .index(1)
@@ -65,7 +65,7 @@ public class GoogleSettings {
                         .name("Client ID")
                         .description("Client ID provided by Google when registering the application.")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .index(2)
                         .type(STRING)
                         .build(),
@@ -73,7 +73,7 @@ public class GoogleSettings {
                         .name("Client Secret")
                         .description("Client password provided by Google when registering the application.")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .type(PASSWORD)
                         .index(3)
                         .type(PASSWORD)
@@ -82,7 +82,7 @@ public class GoogleSettings {
                         .name("Redirect URI")
                         .description("Oauth2 Redirection URI for this SonarQube Instance")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .index(4)
                         .type(STRING)
                         .build(),
@@ -90,7 +90,7 @@ public class GoogleSettings {
                         .name("Allow users to sign-up")
                         .description("Allow new users to authenticate. When set to 'false', only existing users will be able to authenticate to the server.")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .type(BOOLEAN)
                         .defaultValue(valueOf(true))
                         .index(5)
@@ -99,7 +99,7 @@ public class GoogleSettings {
                         .name("Hosted Domain")
                         .description("Google Oauth2 Hosted Domain (https://developers.google.com/identity/protocols/OpenIDConnect#authenticationuriparameters)")
                         .category(CATEGORY)
-                        .subCategory(SUBCATEGORY)
+                        .subCategory(AUTHENTICATION_SUBCATEGORY)
                         .index(6)
                         .type(STRING)
                         .build()
