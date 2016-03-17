@@ -19,75 +19,129 @@
  */
 package org.salvian.sonarqube.auth.google;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sonar.api.config.Settings;
 import org.sonar.api.server.authentication.OAuth2IdentityProvider;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class GoogleIdentityProviderTest {
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-  Settings settings = new Settings();
+    Settings settings = new Settings();
 
-  GoogleSettings googleSettings = new GoogleSettings(settings);
+    GoogleSettings googleSettings = new GoogleSettings(settings);
 
-  GoogleIdentityProvider underTest = new GoogleIdentityProvider(googleSettings);
+    GoogleIdentityProvider underTest = new GoogleIdentityProvider(googleSettings);
 
-  @Test
-  public void check_fields() throws Exception {
-    assertThat(underTest.getKey()).isEqualTo("google");
-    assertThat(underTest.getName()).isEqualTo("Google OAuth2");
-    assertThat(underTest.getDisplay().getIconPath()).isEqualTo("/static/authgoogle/google.svg");
-    assertThat(underTest.getDisplay().getBackgroundColor()).isEqualTo("#000000");
-  }
-
-  @Test
-  public void is_enabled() throws Exception {
-    settings.setProperty(GoogleSettings.CLIENT_ID, "id");
-    settings.setProperty(GoogleSettings.CLIENT_SECRET, "secret");
-    settings.setProperty(GoogleSettings.REDIRECT_URI, "redirect");
-    settings.setProperty(GoogleSettings.ENABLED, true);
-    assertThat(underTest.isEnabled()).isTrue();
-
-    settings.setProperty(GoogleSettings.ENABLED, false);
-    assertThat(underTest.isEnabled()).isFalse();
-  }
-
-  @Test
-  public void init() throws Exception {
-    setSettings(true);
-    OAuth2IdentityProvider.InitContext context = mock(OAuth2IdentityProvider.InitContext.class);
-    when(context.generateCsrfState()).thenReturn("state");
-    when(context.getCallbackUrl()).thenReturn("http://localhost/callback");
-    underTest.init(context);
-    verify(context).redirectTo("https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=id&redirect_uri=redirect&response_type=code" +
-            "&scope=email%20profile%20openid&state=state&hd=hd");
-  }
-  @Test
-  public void fail_to_init_when_disabled() throws Exception {
-    setSettings(false);
-    OAuth2IdentityProvider.InitContext context = mock(OAuth2IdentityProvider.InitContext.class);
-
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage("Google Authentication is disabled");
-    underTest.init(context);
-  }
-
-  private void setSettings(boolean enabled) {
-    if (enabled) {
-      settings.setProperty(GoogleSettings.CLIENT_ID, "id");
-      settings.setProperty(GoogleSettings.CLIENT_SECRET, "secret");
-      settings.setProperty(GoogleSettings.HOSTED_DOMAIN, "hd");
-      settings.setProperty(GoogleSettings.REDIRECT_URI, "redirect");
-      settings.setProperty(GoogleSettings.ENABLED, true);
-    } else {
-      settings.setProperty(GoogleSettings.ENABLED, false);
+    @Test
+    public void check_fields() throws Exception {
+        assertThat(underTest.getKey()).isEqualTo("google");
+        assertThat(underTest.getName()).isEqualTo("Google OAuth2");
+        assertThat(underTest.getDisplay().getIconPath()).isEqualTo("/static/authgoogle/google.svg");
+        assertThat(underTest.getDisplay().getBackgroundColor()).isEqualTo("#000000");
     }
-  }
+
+    @Test
+    public void is_enabled() throws Exception {
+        setSettings(true);
+        assertThat(underTest.isEnabled()).isTrue();
+
+        settings.setProperty(GoogleSettings.ENABLED, false);
+        assertThat(underTest.isEnabled()).isFalse();
+    }
+
+    @Test
+    public void allow_users_to_sign_up() throws Exception {
+        setSettings(true);
+        assertThat(underTest.allowsUsersToSignUp()).isTrue();
+        settings.setProperty(GoogleSettings.ALLOW_USERS_TO_SIGN_UP, false);
+        assertThat(underTest.allowsUsersToSignUp()).isFalse();
+    }
+
+
+    @Test
+    public void init() throws Exception {
+        setSettings(true);
+        OAuth2IdentityProvider.InitContext context = mock(OAuth2IdentityProvider.InitContext.class);
+        when(context.generateCsrfState()).thenReturn("state");
+        underTest.init(context);
+        verify(context).redirectTo("https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=id&redirect_uri=redirect&response_type=code" +
+                "&scope=email%20profile%20openid&state=state&hd=hd");
+    }
+
+    @Test
+    public void fail_to_init_when_disabled() throws Exception {
+        setSettings(false);
+        OAuth2IdentityProvider.InitContext context = mock(OAuth2IdentityProvider.InitContext.class);
+
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Google Authentication is disabled");
+        underTest.init(context);
+    }
+
+
+    @Test
+    public void fail_to_callback_when_no_code() throws Exception {
+        setSettings(true);
+        OAuth2IdentityProvider.CallbackContext context = mock(OAuth2IdentityProvider.CallbackContext.class);
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Authorization Code Fail");
+        underTest.callback(context);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(context.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getParameter("code")).thenReturn("code");
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Authorization Token Fail");
+        underTest.callback(context);
+        GoogleAuthorizationCodeTokenRequest googleAuthorizationCodeTokenRequest = mock(GoogleAuthorizationCodeTokenRequest.class);
+        GoogleTokenResponse googleTokenResponse= mock(GoogleTokenResponse.class);
+        when(googleAuthorizationCodeTokenRequest.execute()).thenReturn(googleTokenResponse);
+        when(googleTokenResponse.getIdToken()).thenReturn("id_token");
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("ID Token Fail");
+        underTest.callback(context);
+    }
+
+    /*@Test
+    public void fail_to_callback_when_no_token() throws Exception {
+        setSettings(true);
+        OAuth2IdentityProvider.CallbackContext context = mock(OAuth2IdentityProvider.CallbackContext.class);
+    }*/
+
+    @Test
+    public void fail_to_callback_when_no_id_token() throws Exception {
+        setSettings(true);
+        OAuth2IdentityProvider.CallbackContext context = mock(OAuth2IdentityProvider.CallbackContext.class);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(context.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getParameter("code")).thenReturn("code");
+        GoogleAuthorizationCodeTokenRequest googleAuthorizationCodeTokenRequest = mock(GoogleAuthorizationCodeTokenRequest.class);
+        when(googleAuthorizationCodeTokenRequest.execute()).thenReturn(new GoogleTokenResponse());
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Authorization Token Fail");
+        underTest.callback(context);
+    }
+
+    private void setSettings(boolean enabled) {
+        if (enabled) {
+            settings.setProperty(GoogleSettings.CLIENT_ID, "id");
+            settings.setProperty(GoogleSettings.CLIENT_SECRET, "secret");
+            settings.setProperty(GoogleSettings.HOSTED_DOMAIN, "hd");
+            settings.setProperty(GoogleSettings.REDIRECT_URI, "redirect");
+            settings.setProperty(GoogleSettings.ENABLED, true);
+            settings.setProperty(GoogleSettings.ALLOW_USERS_TO_SIGN_UP, true);
+        } else {
+            settings.setProperty(GoogleSettings.ENABLED, false);
+        }
+    }
 }
