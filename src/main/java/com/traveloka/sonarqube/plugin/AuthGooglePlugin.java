@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -17,8 +17,18 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-@ParametersAreNonnullByDefault
-package org.sonarsource.auth.github;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+package com.traveloka.sonarqube.plugin;
 
+import org.sonar.api.Plugin;
+
+public class AuthGooglePlugin implements Plugin {
+
+  @Override
+  public void define(Context context) {
+    context.addExtensions(
+            GoogleIdentityProvider.class,
+            GoogleSettings.class);
+    context.addExtensions(GoogleSettings.definitions());
+  }
+}

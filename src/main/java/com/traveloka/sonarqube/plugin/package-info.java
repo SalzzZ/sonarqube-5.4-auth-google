@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -17,30 +17,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonarsource.auth.github;
+@ParametersAreNonnullByDefault
+package com.traveloka.sonarqube.plugin;
 
-import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class AuthGitHubPluginTest {
-
-  MockContext context = new MockContext();
-
-  AuthGitHubPlugin underTest = new AuthGitHubPlugin();
-
-  @Test
-  public void test_extensions() throws Exception {
-    underTest.define(context);
-
-    assertThat(context.getExtensions()).hasSize(13);
-  }
-
-  private static class MockContext extends Plugin.Context {
-    MockContext() {
-      super(Version.create(5, 6));
-    }
-  }
-}

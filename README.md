@@ -1,4 +1,4 @@
-# GitHub Authentication for SonarQube
+# Google Authentication for SonarQube
 
 See [documentation](http://docs.sonarqube.org/display/PLUG/GitHub+Authentication+Plugin).
 

@@ -1,5 +1,5 @@
 /*
- * GitHub Authentication for SonarQube
+ * Google Authentication for SonarQube
  * Copyright (C) 2016-2016 SonarSource SA
  * mailto:contact AT sonarsource DOT com
  *
@@ -17,19 +17,26 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonarsource.auth.github;
+package com.traveloka.sonarqube.plugin;
 
+import org.junit.Test;
 import org.sonar.api.Plugin;
+import org.sonar.api.SonarQubeSide;
+import org.sonar.api.internal.SonarRuntimeImpl;
+import org.sonar.api.utils.Version;
 
-public class AuthGitHubPlugin implements Plugin {
+import static org.assertj.core.api.Assertions.assertThat;
 
-  @Override
-  public void define(Context context) {
-    context.addExtensions(
-      GitHubIdentityProvider.class,
-      GitHubSettings.class,
-      UserIdentityFactory.class,
-      ScribeGitHubApi.class);
-    context.addExtensions(GitHubSettings.definitions());
-  }
+public class AuthGooglePluginTest {
+
+    Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6,0), SonarQubeSide.SERVER));
+
+    AuthGooglePlugin underTest = new AuthGooglePlugin();
+
+    @Test
+    public void test_extensions() throws Exception {
+        underTest.define(context);
+
+        assertThat(context.getExtensions()).hasSize(8);
+    }
 }
