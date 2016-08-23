@@ -42,9 +42,9 @@ public class GoogleIdentityProviderTest {
   @Test
   public void check_fields() throws Exception {
     assertThat(underTest.getKey()).isEqualTo("google");
-    assertThat(underTest.getName()).isEqualTo("Google");
-    assertThat(underTest.getDisplay().getIconPath()).isEqualTo("/static/authgoogle/google.png");
-    assertThat(underTest.getDisplay().getBackgroundColor()).isEqualTo("#444444");
+    assertThat(underTest.getName()).isEqualTo("Google OAuth2");
+    assertThat(underTest.getDisplay().getIconPath()).isEqualTo("/static/authgoogle/google.svg");
+    assertThat(underTest.getDisplay().getBackgroundColor()).isEqualTo("#000000");
   }
 
   @Test
@@ -77,7 +77,6 @@ public class GoogleIdentityProviderTest {
     verify(context).redirectTo("https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=id&redirect_uri=redirect&response_type=code" +
             "&scope=email%20profile%20openid&state=state&hd=hd");
   }
-
   @Test
   public void fail_to_init_when_disabled() throws Exception {
     setSettings(false);

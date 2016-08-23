@@ -54,7 +54,7 @@ public class GoogleSettings {
         return Arrays.asList(
                 PropertyDefinition.builder(ENABLED)
                         .name("Enabled")
-                        .description("Enable Google users to login. Value is ignored if client ID and secret are not defined.")
+                        .description("Enable Google users to login. Value is ignored if client ID, client secret, or Redirection URI is not defined.")
                         .category(CATEGORY)
                         .subCategory(SUBCATEGORY)
                         .type(BOOLEAN)
@@ -74,6 +74,7 @@ public class GoogleSettings {
                         .description("Client password provided by Google when registering the application.")
                         .category(CATEGORY)
                         .subCategory(SUBCATEGORY)
+                        .type(PASSWORD)
                         .index(3)
                         .type(PASSWORD)
                         .build(),

@@ -15,13 +15,13 @@
     <developer>
       <id>SalzzZ</id>
       <name>Salvian Reynaldi</name>
-      <organization>traveloka</organization>
+      <organization>PT Traveloka Indonesia</organization>
     </developer>
   </developers>
 
   <organization>
-    <name>traveloka</name>
-    <url>https://traveloka.com</url>
+    <name>PT Traveloka Indonesia</name>
+    <url>https://www.traveloka.com/</url>
   </organization>
 
   <dependencies>

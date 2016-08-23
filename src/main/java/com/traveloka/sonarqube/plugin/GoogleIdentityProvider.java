@@ -54,14 +54,14 @@ public class GoogleIdentityProvider implements OAuth2IdentityProvider {
     }
 
     public String getName() {
-        return "Google";
+        return "Google OAuth2";
     }
 
     public Display getDisplay() {
         return Display.builder()
-                // URL of src/main/resources/static/google.png at runtime
-                .setIconPath("/static/authgoogle/google.png")
-                .setBackgroundColor("#444444")
+                // URL of src/main/resources/static/google.svg at runtime
+                .setIconPath("/static/authgoogle/google.svg")
+                .setBackgroundColor("#000000")
                 .build();
     }
 
