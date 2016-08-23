@@ -9,9 +9,14 @@
   <name>Google Authentication for SonarQube</name>
   <description>Google Authentication for SonarQube</description>
   <inceptionYear>2016</inceptionYear>
-
+  <packaging>sonar-plugin</packaging>
 
   <developers>
+    <developer>
+      <id>SalzzZ</id>
+      <name>Salvian Reynaldi</name>
+      <organization>PT Traveloka Indonesia</organization>
+    </developer>
     <developer>
       <id>SalzzZ</id>
       <name>Salvian Reynaldi</name>
