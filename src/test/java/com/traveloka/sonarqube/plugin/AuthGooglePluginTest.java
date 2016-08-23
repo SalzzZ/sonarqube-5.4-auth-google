@@ -21,15 +21,13 @@ package com.traveloka.sonarqube.plugin;
 
 import org.junit.Test;
 import org.sonar.api.Plugin;
-import org.sonar.api.SonarQubeSide;
-import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.utils.Version;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthGooglePluginTest {
 
-    Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6,0), SonarQubeSide.SERVER));
+    Plugin.Context context = new Plugin.Context(Version.create(5, 6, 1));
 
     AuthGooglePlugin underTest = new AuthGooglePlugin();
 
